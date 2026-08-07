@@ -98,3 +98,4 @@ def main(epochs=5, batch_size=64, lr=1e-3, out_dir="artifacts"):
 
 if __name__ == "__main__":
     main()
+

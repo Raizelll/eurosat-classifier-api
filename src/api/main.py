@@ -14,6 +14,10 @@ app = FastAPI(
 # Loaded once at startup, not per request
 classifier = Classifier()
 
+@app.get("/")
+def root():
+    return {"message": "EuroSAT classifier API. See /docs for documentation."}
+
 
 @app.get("/health", response_model=HealthResponse)
 def health():

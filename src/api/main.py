@@ -10,30 +10,16 @@ app = FastAPI(
     description="Classifies Sentinel-2 satellite image patches into 10 land-use classes.",
     version="1.0.0",
 )
-
 # Loaded once at startup, not per request
 classifier = Classifier()
 
-@app.get("/")
+@app.get("/", tags=["System"])
 def root():
-    return {"message": "EuroSAT classifier API. See /docs for documentation."}
+    return {" See /docs for documentation."}
 
 
-@app.get("/health", response_model=HealthResponse)
-def health():
-    return HealthResponse(status="ok", model_loaded=classifier is not None)
+@app.post( "/predict", response_model=PredictionResponse, tags=["Inference"], summary="Classify a satellite image")
 
-
-@app.get("/metadata", response_model=MetadataResponse)
-def metadata():
-    return MetadataResponse(
-        classes=CLASSES,
-        input_size=list(IMAGE_SIZE),
-        model_format="onnx",
-    )
-
-
-@app.post("/predict", response_model=PredictionResponse)
 async def predict(file: UploadFile = File(...)):
     contents = await file.read()
 
@@ -45,3 +31,17 @@ async def predict(file: UploadFile = File(...)):
 
     result = classifier.predict(image)
     return PredictionResponse(**result)
+
+
+@app.get("/health", response_model=HealthResponse, tags=["System"])
+def health():
+    return HealthResponse(status="ok", model_loaded=classifier is not None)
+
+
+@app.get("/metadata", response_model=MetadataResponse, tags=["System"])
+def metadata():
+    return MetadataResponse(
+        classes=CLASSES,
+        input_size=list(IMAGE_SIZE),
+        model_format="onnx",
+    )

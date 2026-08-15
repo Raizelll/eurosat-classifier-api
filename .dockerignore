@@ -1,0 +1,9 @@
+.venv/
+data/
+tests/
+src/training/
+__pycache__/
+*.pyc
+.git/
+.pytest_cache/
+artifacts/best_model.pt
